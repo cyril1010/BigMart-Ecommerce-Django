@@ -1,0 +1,85 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<div class="col-12 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">Add Product</h4>
+
+      <form class="forms-sample" method="post" action="{% url 'ProductSave' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="productName">Product Name</label>
+          <input type="text" class="form-control" id="productName" name="name" placeholder="Product Name">
+        </div>
+
+        <div class="form-group">
+          <label for="productCategory">Category</label>
+          <select class="form-control" id="productCategory" name="category">
+            {% for category in categories %}
+              <option>{{ category.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="productPrice">Price</label>
+          <input type="number" class="form-control" id="productPrice" name="price" placeholder="Product Price" step="0.01">
+        </div>
+
+        <div class="form-group">
+          <label for="productDescription">Description</label>
+          <textarea class="form-control" id="productDescription" name="description" rows="4" placeholder="Enter product description" style="height:10%"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Image</label>
+          <input type="file" name="image" class="file-upload-default" id="image" style="display: none;">
+          <div class="input-group col-xs-12">
+            <input type="text" class="form-control file-upload-info" disabled placeholder="Upload Image">
+            <span class="input-group-append">
+              <button class="file-upload-browse btn btn-primary" type="button" onclick="triggerFileUpload()">Upload</button>
+            </span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary me-2">Submit</button>
+        <button type="reset" class="btn btn-light">Cancel</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  function triggerFileUpload() {
+    document.getElementById('image').click();
+  }
+
+  // Display file name in the text input when a file is selected
+  document.getElementById('image').addEventListener('change', function () {
+    const fileName = this.files[0] ? this.files[0].name : '';
+    document.querySelector('.file-upload-info').value = fileName;
+  });
+</script>
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script>
+  {% if messages %}
+    {% for i in messages %}
+      {% if i.tags == "success" %}
+        swal('{{ i }}', '', 'success');
+      {% elif i.tags == "error" %}
+        swal('{{ i }}', '', 'error');
+      {% elif i.tags == "warning" %}
+        swal('{{ i }}', '', 'warning');
+      {% else %}
+        swal('{{ i }}', '', 'info');
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+</script>
+
+{% endblock %}
